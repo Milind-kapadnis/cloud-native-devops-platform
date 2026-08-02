@@ -1,4 +1,22 @@
-venv/
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+app/venv/
+
+# VS Code
+.vscode/
+
+# Environment
 .env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Minikube binary
+minikube-linux-amd64
