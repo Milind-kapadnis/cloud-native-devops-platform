@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: cloud-native-devops-deployment
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: cloud-native-devops
+
+  template:
+    metadata:
+      labels:
+        app: cloud-native-devops
+
+    spec:
+      containers:
+        - name: cloud-native-devops-container
+          image: cloud-native-devops-platform:latest
+          imagePullPolicy: Never
+
+          ports:
+            - containerPort: 8000
