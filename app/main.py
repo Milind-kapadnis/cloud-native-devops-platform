@@ -1,30 +1,26 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+
+from database import engine, Base
+from dependencies import get_db
+from schemas import RegisterRequest, LoginRequest, UserResponse
+from routers import users
+
+import models
+import crud
+from core.security import create_access_token
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Cloud Native DevOps Platform",
     version="1.0.0"
 )
 
+# Include Routers
+app.include_router(users.router)
 
-# -----------------------------
-# Models
-# -----------------------------
-
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-
-class RegisterRequest(BaseModel):
-    username: str
-    email: str
-    password: str
-
-
-# -----------------------------
-# APIs
-# -----------------------------
 
 @app.get("/")
 def root():
@@ -40,22 +36,36 @@ def health():
     }
 
 
+@app.post("/register", response_model=UserResponse)
+def register(data: RegisterRequest, db: Session = Depends(get_db)):
+    user = crud.create_user(
+        db=db,
+        username=data.username,
+        email=data.email,
+        password=data.password
+    )
+
+    return user
+
+
 @app.post("/login")
-def login(data: LoginRequest):
-    if data.username == "admin" and data.password == "admin123":
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    user = crud.authenticate_user(
+        db=db,
+        username=data.username,
+        password=data.password
+    )
+
+    if not user:
         return {
-            "message": "Login Successful"
+            "message": "Invalid username or password"
         }
 
-    return {
-        "message": "Invalid Username or Password"
-    }
+    token = create_access_token(
+        {"sub": user.username}
+    )
 
-
-@app.post("/register")
-def register(data: RegisterRequest):
     return {
-        "message": "User Registered Successfully",
-        "username": data.username,
-        "email": data.email
+        "access_token": token,
+        "token_type": "bearer"
     }
