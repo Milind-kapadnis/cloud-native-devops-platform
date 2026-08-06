@@ -1,0 +1,25 @@
+.
+├── Dockerfile
+├── README.md
+├── app
+│   ├── __pycache__
+│   ├── crud.py
+│   ├── database.py
+│   ├── dependencies.py
+│   ├── main.py
+│   ├── models.py
+│   ├── requirements.txt
+│   ├── routers
+│   ├── schemas.py
+│   └── venv
+├── docker-compose.yml
+├── k8s
+│   ├── deployment.yaml
+│   └── service.yaml
+├── minikube-linux-amd64
+├── tests
+│   ├── __pycache__
+│   └── test_main.py
+└── tree.txt
+
+8 directories, 15 files
