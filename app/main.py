@@ -1,14 +1,14 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-from database import engine, Base
-from dependencies import get_db
-from schemas import RegisterRequest, LoginRequest, UserResponse
-from routers import users
+from app.database import engine, Base
+from app.dependencies import get_db
+from app.schemas import RegisterRequest, LoginRequest, UserResponse
+from app.routers import users
 
-import models
-import crud
-from core.security import create_access_token
+from app import models
+from app import crud
+from app.core.security import create_access_token
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
