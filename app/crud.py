@@ -1,12 +1,11 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-import models
 
-from core.security import hash_password, verify_password
+from app import models
+from app.core.security import hash_password, verify_password
 
 
 def create_user(db: Session, username: str, email: str, password: str):
-
     existing_username = db.query(models.User).filter(
         models.User.username == username
     ).first()
@@ -43,7 +42,6 @@ def create_user(db: Session, username: str, email: str, password: str):
 
 
 def authenticate_user(db: Session, username: str, password: str):
-
     user = db.query(models.User).filter(
         models.User.username == username
     ).first()
@@ -58,7 +56,6 @@ def authenticate_user(db: Session, username: str, password: str):
 
 
 def update_user(db: Session, user_id: int, username: str, email: str):
-
     user = db.query(models.User).filter(
         models.User.id == user_id
     ).first()
@@ -79,7 +76,6 @@ def update_user(db: Session, user_id: int, username: str, email: str):
 
 
 def delete_user(db: Session, user_id: int):
-
     user = db.query(models.User).filter(
         models.User.id == user_id
     ).first()
