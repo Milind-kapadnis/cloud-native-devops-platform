@@ -20,3 +20,4 @@ Thumbs.db
 
 # Minikube binary
 minikube-linux-amd64
+.venv/
