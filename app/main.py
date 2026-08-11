@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
 from app.database import engine, Base
-from app.dependencies import get_db
+from app.dependencies import get_db, get_current_user
 from app.schemas import RegisterRequest, LoginRequest, UserResponse
 from app.routers import users
 
@@ -69,3 +69,8 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
         "access_token": token,
         "token_type": "bearer"
     }
+
+
+@app.get("/me")
+def get_me(current_user: str = Depends(get_current_user)):
+    return {"username": current_user}
