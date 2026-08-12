@@ -1,48 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
-  name: cloud-native-devops-deployment
-
+  name: cloud-native-devops
 spec:
-  replicas: 2
-
+  replicas: 1
   selector:
     matchLabels:
       app: cloud-native-devops
-
   template:
     metadata:
       labels:
         app: cloud-native-devops
-
     spec:
       containers:
-        - name: cloud-native-devops-container
-          image: cloud-native-devops-platform:latest
-          imagePullPolicy: Never
-
+        - name: cloud-native-devops
+          image: ghcr.io/milind-kapadnis/cloud-native-devops:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
-
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
-
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 10
-
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          env:
+            - name: DATABASE_URL
+              value: postgresql://admin:admin123@postgres:5432/devops_db
