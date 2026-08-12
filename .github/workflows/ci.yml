@@ -45,3 +45,7 @@ jobs:
           DATABASE_URL: postgresql://admin:admin123@localhost:5432/devops_db
         run: |
           pytest
+
+      - name: Build Docker Image
+        run: |
+          docker build -t cloud-native-devops:latest .
