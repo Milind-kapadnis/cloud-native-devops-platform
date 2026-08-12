@@ -1,0 +1,13 @@
+.venv/
+venv/
+app/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.github/
+.vscode/
+.env
+minikube-linux-amd64
+*.log
