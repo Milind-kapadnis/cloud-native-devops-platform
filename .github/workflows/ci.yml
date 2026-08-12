@@ -1,5 +1,9 @@
 name: CI Pipeline
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches:
@@ -59,5 +63,5 @@ jobs:
 
       - name: Push Docker Image to GHCR
         run: |
-          docker tag cloud-native-devops:latest ghcr.io/${{ github.repository_owner }}/cloud-native-devops:latest
-          docker push ghcr.io/${{ github.repository_owner }}/cloud-native-devops:latest
+          docker tag cloud-native-devops:latest ghcr.io/milind-kapadnis/cloud-native-devops:latest
+          docker push ghcr.io/milind-kapadnis/cloud-native-devops:latest
