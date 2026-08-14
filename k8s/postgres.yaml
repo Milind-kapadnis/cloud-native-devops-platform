@@ -7,6 +7,7 @@ stringData:
   POSTGRES_USER: admin
   POSTGRES_PASSWORD: admin123
   POSTGRES_DB: devops_db
+  DATABASE_URL: postgresql://admin:admin123@postgres:5432/devops_db
 
 ---
 apiVersion: v1
@@ -40,25 +41,30 @@ spec:
           image: postgres:16
           ports:
             - containerPort: 5432
+
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_USER
+
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_PASSWORD
+
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_DB
+
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
+
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
