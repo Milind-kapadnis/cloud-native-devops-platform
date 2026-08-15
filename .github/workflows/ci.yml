@@ -54,6 +54,15 @@ jobs:
         run: |
           docker build -t cloud-native-devops:latest .
 
+      - name: Trivy Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: cloud-native-devops:latest
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
