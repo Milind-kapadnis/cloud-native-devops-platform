@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cloud-native-devops-application-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: cloud-native-devops-application
+      rules:
+        - alert: CloudNativeDevOpsPodDown
+          expr: kube_deployment_status_replicas_available{namespace="default",deployment="cloud-native-devops"} < 1
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cloud Native DevOps application is down"
+            description: "No available replicas for cloud-native-devops deployment."
+
+        - alert: CloudNativeDevOpsPodNotReady
+          expr: kube_deployment_status_replicas_ready{namespace="default",deployment="cloud-native-devops"} < 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cloud Native DevOps pod is not ready"
+            description: "The application deployment has no ready replicas."
+
+        - alert: CloudNativeDevOpsHighCPU
+          expr: |
+            (
+              sum(rate(container_cpu_usage_seconds_total{namespace="default",pod=~"cloud-native-devops-.*",container!="POD",image!=""}[5m]))
+              /
+              sum(kube_pod_container_resource_requests{namespace="default",pod=~"cloud-native-devops-.*",resource="cpu",unit="core"})
+            ) * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cloud Native DevOps CPU usage is high"
+            description: "Application CPU usage is above 80% of requested CPU for 5 minutes."
+
+        - alert: CloudNativeDevOpsPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="default",pod=~"cloud-native-devops-.*"}[10m]) > 2
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cloud Native DevOps pod is restarting"
+            description: "Application pod restarted more than twice in the last 10 minutes."
