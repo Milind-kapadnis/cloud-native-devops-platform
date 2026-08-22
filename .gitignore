@@ -21,3 +21,8 @@ Thumbs.db
 # Minikube binary
 minikube-linux-amd64
 .venv/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
