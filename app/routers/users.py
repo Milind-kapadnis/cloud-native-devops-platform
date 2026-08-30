@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.dependencies import get_db
-from app.auth.auth import verify_token
+from app.dependencies import get_db, get_current_user
 from app.schemas import UserResponse, UpdateUserRequest
 from app import models
 from app import crud
@@ -15,7 +14,7 @@ router = APIRouter(
 
 @router.get("/", response_model=list[UserResponse])
 def get_all_users(
-    username: str = Depends(verify_token),
+    username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     return db.query(models.User).all()
@@ -24,7 +23,7 @@ def get_all_users(
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
     user_id: int,
-    username: str = Depends(verify_token),
+    username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     user = db.query(models.User).filter(
@@ -38,7 +37,7 @@ def get_user(
 def update_user(
     user_id: int,
     data: UpdateUserRequest,
-    username: str = Depends(verify_token),
+    username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     return crud.update_user(
@@ -52,7 +51,7 @@ def update_user(
 @router.delete("/{user_id}")
 def delete_user(
     user_id: int,
-    username: str = Depends(verify_token),
+    username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     return crud.delete_user(
