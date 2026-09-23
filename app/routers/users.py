@@ -46,6 +46,16 @@ def update_user(
     username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    target = db.query(models.User).filter(
+        models.User.id == user_id
+    ).first()
+
+    if target and target.username != username:
+        raise HTTPException(
+            status_code=403,
+            detail="Not allowed to modify another user"
+        )
+
     return crud.update_user(
         db=db,
         user_id=user_id,
@@ -60,6 +70,16 @@ def delete_user(
     username: str = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    target = db.query(models.User).filter(
+        models.User.id == user_id
+    ).first()
+
+    if target and target.username != username:
+        raise HTTPException(
+            status_code=403,
+            detail="Not allowed to modify another user"
+        )
+
     return crud.delete_user(
         db=db,
         user_id=user_id
