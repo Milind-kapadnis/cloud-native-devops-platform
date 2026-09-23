@@ -19,7 +19,7 @@ jobs:
         image: postgres:16
         env:
           POSTGRES_USER: admin
-          POSTGRES_PASSWORD: REMOVED_PASSWORD
+          POSTGRES_PASSWORD: ci_throwaway_pw
           POSTGRES_DB: devops_db
         ports:
           - 5432:5432
@@ -46,7 +46,7 @@ jobs:
       - name: Run Tests
         env:
           PYTHONPATH: ${{ github.workspace }}
-          DATABASE_URL: postgresql://admin:REMOVED_PASSWORD@localhost:5432/devops_db
+          DATABASE_URL: postgresql://admin:ci_throwaway_pw@localhost:5432/devops_db
         run: |
           pytest
 
