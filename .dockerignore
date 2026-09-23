@@ -11,3 +11,4 @@ __pycache__/
 .env
 minikube-linux-amd64
 *.log
+terraform/
