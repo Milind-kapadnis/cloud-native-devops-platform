@@ -4,11 +4,8 @@ from datetime import datetime, timedelta, timezone
 from jose import jwt
 from passlib.context import CryptContext
 
-# JWT Settings — loaded from environment variable, with a local-dev fallback
-SECRET_KEY = os.getenv(
-    "JWT_SECRET_KEY",
-    "REMOVED_JWT_SECRET"
-)
+# JWT Settings: secret must come from the environment (no fallback)
+SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
