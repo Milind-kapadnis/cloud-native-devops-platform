@@ -66,6 +66,28 @@ def update_user(db: Session, user_id: int, username: str, email: str):
             detail="User not found"
         )
 
+    existing_username = db.query(models.User).filter(
+        models.User.username == username,
+        models.User.id != user_id
+    ).first()
+
+    if existing_username:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already exists"
+        )
+
+    existing_email = db.query(models.User).filter(
+        models.User.email == email,
+        models.User.id != user_id
+    ).first()
+
+    if existing_email:
+        raise HTTPException(
+            status_code=400,
+            detail="Email already exists"
+        )
+
     user.username = username
     user.email = email
 
