@@ -26,3 +26,4 @@ minikube-linux-amd64
 terraform/.terraform/
 terraform/*.tfstate
 terraform/*.tfstate.*
+k8s/postgres-secret.yaml
