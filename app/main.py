@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import engine, Base
@@ -57,9 +57,10 @@ def login(data: LoginRequest, db: Session = Depends(get_db)):
     )
 
     if not user:
-        return {
-            "message": "Invalid username or password"
-        }
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password"
+        )
 
     token = create_access_token(
         {"sub": user.username}
