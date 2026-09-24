@@ -74,3 +74,5 @@ jobs:
         run: |
           docker tag cloud-native-devops:latest ghcr.io/milind-kapadnis/cloud-native-devops:latest
           docker push ghcr.io/milind-kapadnis/cloud-native-devops:latest
+          docker tag cloud-native-devops:latest ghcr.io/milind-kapadnis/cloud-native-devops:${{ github.sha }}
+          docker push ghcr.io/milind-kapadnis/cloud-native-devops:${{ github.sha }}
