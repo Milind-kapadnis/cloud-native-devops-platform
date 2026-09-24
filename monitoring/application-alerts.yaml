@@ -30,7 +30,7 @@ spec:
         - alert: CloudNativeDevOpsHighCPU
           expr: |
             (
-              sum(rate(container_cpu_usage_seconds_total{namespace="default",pod=~"cloud-native-devops-.*",container!="POD",image!=""}[5m]))
+              sum(rate(container_cpu_usage_seconds_total{namespace="default",pod=~"cloud-native-devops-.*",container!="POD"}[5m]))
               /
               sum(kube_pod_container_resource_requests{namespace="default",pod=~"cloud-native-devops-.*",resource="cpu",unit="core"})
             ) * 100 > 80
