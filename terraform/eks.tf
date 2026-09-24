@@ -2,10 +2,12 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 21.0"
 
-  name               = "cloud-native-devops"
-  kubernetes_version = "1.33"
+  name               = var.cluster_name
+  kubernetes_version = var.kubernetes_version
 
   endpoint_public_access = true
+
+  enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
@@ -26,7 +28,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      instance_types = ["t3.small"]
+      instance_types = [var.node_instance_type]
 
       capacity_type = "ON_DEMAND"
 

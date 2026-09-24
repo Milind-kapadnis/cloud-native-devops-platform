@@ -1,4 +1,11 @@
 provider "aws" {
-  region  = "ap-south-1"
-  profile = "cloud-native-devops-admin"
+  region  = var.aws_region
+  profile = var.aws_profile
+
+  default_tags {
+    tags = {
+      Project   = "cloud-native-devops-platform"
+      ManagedBy = "terraform"
+    }
+  }
 }
