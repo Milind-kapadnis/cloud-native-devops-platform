@@ -1,0 +1,13 @@
+# Remote state with S3 native locking (Terraform >= 1.10).
+# 1. Create the bucket first (versioning + encryption enabled).
+# 2. Rename this file to backend.tf and run: terraform init -migrate-state
+terraform {
+  backend "s3" {
+    bucket       = "REPLACE-with-your-state-bucket"
+    key          = "cloud-native-devops/terraform.tfstate"
+    region       = "ap-south-1"
+    profile      = "cloud-native-devops-admin"
+    encrypt      = true
+    use_lockfile = true
+  }
+}
