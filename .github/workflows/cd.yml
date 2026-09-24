@@ -8,35 +8,50 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-minikube
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
+    env:
+      IMAGE: ghcr.io/milind-kapadnis/cloud-native-devops:${{ github.event.workflow_run.head_sha }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Check Kubernetes
+      - name: Check cluster and secrets
         run: |
-          kubectl config current-context
           kubectl get nodes
+          kubectl get secret postgres-secret app-secrets
 
-      - name: Deploy PostgreSQL
+      - name: Deploy PostgreSQL and wait until ready
         run: |
+          kubectl apply -f k8s/serviceaccount.yaml
           kubectl apply -f k8s/postgres.yaml
+          kubectl rollout status deployment/postgres --timeout=180s
 
-      - name: Deploy Application
+      - name: Deploy application with this commit's image
         run: |
           kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-
-      - name: Wait for Application Rollout
-        run: |
+          kubectl set image deployment/cloud-native-devops cloud-native-devops=${{ env.IMAGE }}
           kubectl rollout status deployment/cloud-native-devops --timeout=180s
 
-      - name: Verify Deployment
+      - name: Apply service, network policy, autoscaler and ingress
         run: |
-          kubectl get deployments
-          kubectl get pods
-          kubectl get services
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/network-policy.yaml
+          kubectl apply -f k8s/hpa.yaml
+          kubectl apply -f k8s/ingress.yaml
+
+      - name: Verify application health
+        run: |
+          kubectl exec deploy/cloud-native-devops -- python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/health').read().decode())"
